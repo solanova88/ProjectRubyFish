@@ -1,0 +1,56 @@
+﻿@page "/catalog/roll"
+@rendermode InteractiveServer
+@inject IProductService ProductService
+
+<PageTitle>Заказ роллов доставка</PageTitle>
+
+<h1 align="center">Роллы</h1>
+
+
+    <div class='catalog'>
+
+        @foreach (var product in Products)
+        {
+            <div class='card'>
+                <div class='card-text'>
+                    <div class='card-name'>@product.Title</div>
+
+                    <div class='card-desc'>
+                        @product.Description
+                    </div>
+                </div>
+                <div class='card-bottom'>
+                    <div class='card-price'>@product.Price р</div>
+                    <div class='card-counter'>
+                        <div class='btn' @onclick="() => ProductService.ProductQuantityDecrementAsync(product)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                            </svg>
+                        </div>
+                        <input type="text" id = "@product.Id" readonly value="@product.Quantity" />
+                        <div class='btn' @onclick="() => ProductService.ProductQuantityIncrementAsync(product)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                            </svg>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        }
+    </div>
+
+
+
+
+@code {
+    List<Product> Products = new List<Product>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await ProductService.GetAllProductsAsync();
+    }
+
+}
