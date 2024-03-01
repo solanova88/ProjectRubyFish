@@ -45,42 +45,16 @@ namespace Services
 
         public async Task ProductQuantityIncrementAsync(Product product)
         {
-            try
-            {
-                await Task.Delay(150);
                 product.Quantity++;
                 await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                await Task.Delay(250);
-                product.Quantity++;
-                await _context.SaveChangesAsync();
-            }
         }
         public async Task ProductQuantityDecrementAsync(Product product)
         {
-            try
-            {
-                await Task.Delay(150);
                 if (product.Quantity > 0)
                 {
                     product.Quantity--;
                     await _context.SaveChangesAsync();
                 }
-            }
-            catch
-            {
-                await Task.Delay(250);
-                if (product.Quantity > 0)
-                {
-                    product.Quantity--;
-                    await _context.SaveChangesAsync();
-                }
-            }
-
         }
-
-
     }
 }
