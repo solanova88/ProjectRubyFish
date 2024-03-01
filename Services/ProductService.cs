@@ -18,10 +18,29 @@ namespace Services
             _context = context;
         }
 
-        public async Task<List<Product>> GetAllProductsAsync()
+        public async Task<List<Product>> GetAllRollAsync()
         {
-            var result = await _context.Products.ToListAsync();
-            return result;
+            return await _context.Products.Where(p => p.Type == "Roll").ToListAsync();
+        }
+        public async Task<List<Product>> GetAllSetAsync()
+        {
+            return await _context.Products.Where(p => p.Type == "Set").ToListAsync();
+        }
+        public async Task<List<Product>> GetAllPizzaAsync()
+        {
+            return await _context.Products.Where(p => p.Type == "Pizza").ToListAsync();
+        }
+        public async Task<List<Product>> GetAllDrinksAsync()
+        {
+            return await _context.Products.Where(p => p.Type == "Drink").ToListAsync();
+        }
+        public async Task<List<Product>> GetAllDessertsAsync()
+        {
+            return await _context.Products.Where(p => p.Type == "Dessert").ToListAsync();
+        }
+        public async Task<List<Product>> GetAllComboAsync()
+        {
+            return await _context.Products.Where(p => p.Type == "Combo").ToListAsync();
         }
 
         public async Task ProductQuantityIncrementAsync(Product product)

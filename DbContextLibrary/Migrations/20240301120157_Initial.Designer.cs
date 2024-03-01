@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DbContextLibrary.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240228123420_Test1")]
-    partial class Test1
+    [Migration("20240301120157_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,13 +27,11 @@ namespace DbContextLibrary.Migrations
 
             modelBuilder.Entity("ModelsLibrary.Cart", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<long?>("TotalAmmount")
+                    b.Property<long?>("Ammount")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -43,23 +41,21 @@ namespace DbContextLibrary.Migrations
 
             modelBuilder.Entity("ModelsLibrary.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CartId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("CartId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<long?>("Price")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("Price")
+                        .HasColumnType("integer");
 
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");

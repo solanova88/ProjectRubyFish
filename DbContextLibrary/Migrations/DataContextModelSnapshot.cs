@@ -24,11 +24,9 @@ namespace DbContextLibrary.Migrations
 
             modelBuilder.Entity("ModelsLibrary.Cart", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<long?>("Ammount")
                         .HasColumnType("bigint");
@@ -40,23 +38,21 @@ namespace DbContextLibrary.Migrations
 
             modelBuilder.Entity("ModelsLibrary.Product", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("uuid");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CartId")
-                        .HasColumnType("integer");
+                    b.Property<Guid?>("CartId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<long?>("Price")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("Price")
+                        .HasColumnType("integer");
 
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .HasColumnType("text");

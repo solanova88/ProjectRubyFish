@@ -9,7 +9,13 @@ namespace Services
 {
     public interface IProductService
     {
-        Task<List<Product>> GetAllProductsAsync();
+        Task<List<Product>> GetAllRollAsync();
+        Task<List<Product>> GetAllSetAsync();
+        Task<List<Product>> GetAllPizzaAsync();
+        Task<List<Product>> GetAllDrinksAsync();
+        Task<List<Product>> GetAllDessertsAsync();
+        Task<List<Product>> GetAllComboAsync();
+
         Task ProductQuantityIncrementAsync(Product product);
         Task ProductQuantityDecrementAsync(Product product);
     }
