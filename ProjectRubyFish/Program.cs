@@ -1,4 +1,4 @@
-using ProjectRubyFish.Components;
+
 using DbContextLibrary;
 using ModelsLibrary;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +7,7 @@ using Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DataContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -27,9 +26,12 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
+app.UseRouting();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
