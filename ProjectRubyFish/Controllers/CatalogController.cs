@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ModelsLibrary;
 using Services;
 
 namespace ProjectRubyFish.Controllers
@@ -9,9 +10,13 @@ namespace ProjectRubyFish.Controllers
         {
             return View();
         }
-        public IActionResult Rolls()
+        public async Task<IActionResult> Rolls([FromServices] IProductService product)
         {
-            return View();
+            List<Product> Rolls = new List<Product>();
+
+            Rolls = await product.GetAllRollAsync();
+     
+            return View(Rolls);
         }
         public IActionResult Pizza()
         {
