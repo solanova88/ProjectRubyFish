@@ -45,36 +45,35 @@
     $('.decrement').click(function () {
         var productId = $(this).data('product-id');
 
-        // Отправляем AJAX-запрос для уменьшения количества товара
         $.post("/Catalog/ProductQuantityDecrement", { productId: productId }, function (response) {
             if (response.success) {
-                // Обновляем количество товара на странице
-                var quantityElement = $('#quantity_' + productId); // Выбираем элемент по новому идентификатору
+
+                var quantityElement = $('#quantity_' + productId);
                 var newQuantity = response.quantity;
                 quantityElement.val(newQuantity);
             } else {
                 alert('Ошибка при уменьшении количества товара.');
             }
         }).fail(function () {
-            alert('Ошибка при выполнении AJAX-запроса.'); // Эта строка должна быть частью вызова функции
+            alert('Ошибка при выполнении AJAX-запроса.');
         });
     });
 
     $('.increment').click(function () {
         var productId = $(this).data('product-id');
 
-        // Отправляем AJAX-запрос для увеличения количества товара
+
         $.post("/Catalog/ProductQuantityIncrement", { productId: productId }, function (response) {
             if (response.success) {
-                // Обновляем количество товара на странице
-                var quantityElement = $('#quantity_' + productId); // Выбираем элемент по новому идентификатору
+
+                var quantityElement = $('#quantity_' + productId);
                 var newQuantity = response.quantity;
                 quantityElement.val(newQuantity);
             } else {
                 alert('Ошибка при увеличении количества товара.');
             }
         }).fail(function () {
-            alert('Ошибка при выполнении AJAX-запроса.'); // Эта строка должна быть частью вызова функции
+            alert('Ошибка при выполнении AJAX-запроса.');
         });
     });
 </script>
