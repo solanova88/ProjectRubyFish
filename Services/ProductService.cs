@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DbContextLibrary;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.CodeAnalysis;
 
 namespace Services
 {
@@ -45,18 +46,29 @@ namespace Services
             return await _context.Products.Where(p => p.Type == "Combo").ToListAsync();
         }
 
-        public async Task ProductQuantityIncrementAsync(Product product)
+        public async Task<int?> ProductQuantityIncrementAsync(Guid productId)
         {
-                product.Quantity++;
+            var productToUpdate = await _context.Products.FindAsync(productId);
+
+            if (productToUpdate != null)
+            {
+                productToUpdate.Quantity++;
                 await _context.SaveChangesAsync();
+                return productToUpdate.Quantity;
+            }
+            return null;
         }
-        public async Task ProductQuantityDecrementAsync(Product product)
+        public async Task<int?> ProductQuantityDecrementAsync(Guid productId)
         {
-                if (product.Quantity > 0)
-                {
-                    product.Quantity--;
-                    await _context.SaveChangesAsync();
-                }
+            var productToUpdate = await _context.Products.FindAsync(productId);
+
+            if (productToUpdate != null && productToUpdate.Quantity > 0)
+            {
+                productToUpdate.Quantity--;
+                await _context.SaveChangesAsync();
+                return productToUpdate.Quantity;
+            }
+            return 0;
         }
     }
 }

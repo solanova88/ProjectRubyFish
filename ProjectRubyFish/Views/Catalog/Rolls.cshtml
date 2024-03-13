@@ -19,17 +19,19 @@
                 <div class='card-bottom'>
                     <div class='card-price'>@roll.Price р</div>
                     <div class='card-counter'>
-@*                         <div class='btn'  @ProductService.ProductQuantityDecrementAsync(roll)">
+                        <button class="decrement button" type ="button" data-product-id="@roll.Id">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
                                 <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
                             </svg>
-                        </div> *@
-                        <input type="text" id="@roll.Id" readonly value="@roll.Quantity" />
-@*                         <div class='btn' onclick="async () => await @ProductService.ProductQuantityIncrementAsync(roll)">
+                        </button>
+
+                        <input type="text" id="quantity_@roll.Id" readonly value="@roll.Quantity" />
+                        <button class="increment button" type="button" data-product-id="@roll.Id">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
                             </svg>
-                        </div> *@
+                        </button>
+
                     </div>
 
                 </div>
@@ -38,15 +40,44 @@
     </div>
 </form>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('.decrement').click(function () {
+        var productId = $(this).data('product-id');
+
+        // Отправляем AJAX-запрос для уменьшения количества товара
+        $.post("/Catalog/ProductQuantityDecrement", { productId: productId }, function (response) {
+            if (response.success) {
+                // Обновляем количество товара на странице
+                var quantityElement = $('#quantity_' + productId); // Выбираем элемент по новому идентификатору
+                var newQuantity = response.quantity;
+                quantityElement.val(newQuantity);
+            } else {
+                alert('Ошибка при уменьшении количества товара.');
+            }
+        }).fail(function () {
+            alert('Ошибка при выполнении AJAX-запроса.'); // Эта строка должна быть частью вызова функции
+        });
+    });
+
+    $('.increment').click(function () {
+        var productId = $(this).data('product-id');
+
+        // Отправляем AJAX-запрос для увеличения количества товара
+        $.post("/Catalog/ProductQuantityIncrement", { productId: productId }, function (response) {
+            if (response.success) {
+                // Обновляем количество товара на странице
+                var quantityElement = $('#quantity_' + productId); // Выбираем элемент по новому идентификатору
+                var newQuantity = response.quantity;
+                quantityElement.val(newQuantity);
+            } else {
+                alert('Ошибка при увеличении количества товара.');
+            }
+        }).fail(function () {
+            alert('Ошибка при выполнении AJAX-запроса.'); // Эта строка должна быть частью вызова функции
+        });
+    });
+</script>
 
 
 
-@* 
-    List<Product>Rolls = new List<Product>();
-
-        protected override async Task OnInitializedAsync()
-        {
-            Rolls = await ProductService.GetAllRollAsync();
-        }
-
- *@

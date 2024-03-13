@@ -16,7 +16,7 @@ namespace Services
         Task<List<Product>> GetAllDessertsAsync();
         Task<List<Product>> GetAllComboAsync();
 
-        Task ProductQuantityIncrementAsync(Product product);
-        Task ProductQuantityDecrementAsync(Product product);
+        Task<int?> ProductQuantityIncrementAsync(Guid productId);
+        Task<int?> ProductQuantityDecrementAsync(Guid productId);
     }
 }
