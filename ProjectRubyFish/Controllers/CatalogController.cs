@@ -6,10 +6,10 @@ namespace ProjectRubyFish.Controllers
 {
     public class CatalogController : Controller
     {
-        private readonly IProductService productService;
-        public CatalogController(IProductService product) 
+        private readonly IProductService _productService;
+        public CatalogController(IProductService productService) 
         {
-            productService = product;
+            _productService = productService;
         }
         public IActionResult Index()
         {
@@ -19,7 +19,7 @@ namespace ProjectRubyFish.Controllers
         {
             List<Product> Rolls = new List<Product>();
 
-            Rolls = await productService.GetAllRollAsync();
+            Rolls = await _productService.GetAllRollAsync();
 
             return View(Rolls);
         }
@@ -45,12 +45,12 @@ namespace ProjectRubyFish.Controllers
         }
         public async Task<IActionResult> ProductQuantityIncrement(Guid productId)
         {
-                var updatedProduct = await productService.ProductQuantityIncrementAsync(productId);
+                var updatedProduct = await _productService.ProductQuantityIncrementAsync(productId);
                 return Json(new { success = true, quantity = updatedProduct });
         }
         public async Task<IActionResult> ProductQuantityDecrement(Guid productId)
         {
-                var updatedProduct = await productService.ProductQuantityDecrementAsync(productId);
+                var updatedProduct = await _productService.ProductQuantityDecrementAsync(productId);
                 return Json(new { success = true, quantity = updatedProduct });
         }
     }

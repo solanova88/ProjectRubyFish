@@ -23,27 +23,27 @@ namespace Services
 
         public async Task<List<Product>> GetAllRollAsync()
         {
-            return await _context.Products.Where(p => p.Type == "Roll").ToListAsync();
+            return await _context.Products.Where(p => p.Type == ProductType.Roll).ToListAsync();
         }
         public async Task<List<Product>> GetAllSetAsync()
         {
-            return await _context.Products.Where(p => p.Type == "Set").ToListAsync();
+            return await _context.Products.Where(p => p.Type == ProductType.Set).ToListAsync();
         }
         public async Task<List<Product>> GetAllPizzaAsync()
         {
-            return await _context.Products.Where(p => p.Type == "Pizza").ToListAsync();
+            return await _context.Products.Where(p => p.Type == ProductType.Pizza).ToListAsync();
         }
         public async Task<List<Product>> GetAllDrinksAsync()
         {
-            return await _context.Products.Where(p => p.Type == "Drink").ToListAsync();
+            return await _context.Products.Where(p => p.Type == ProductType.Drink).ToListAsync();
         }
         public async Task<List<Product>> GetAllDessertsAsync()
         {
-            return await _context.Products.Where(p => p.Type == "Dessert").ToListAsync();
+            return await _context.Products.Where(p => p.Type == ProductType.Dessert).ToListAsync();
         }
         public async Task<List<Product>> GetAllComboAsync()
         {
-            return await _context.Products.Where(p => p.Type == "Combo").ToListAsync();
+            return await _context.Products.Where(p => p.Type == ProductType.Combo).ToListAsync();
         }
 
         public async Task<int?> ProductQuantityIncrementAsync(Guid productId)
