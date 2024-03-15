@@ -1,6 +1,4 @@
-﻿
-
-.catalog {
+﻿.cart {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -9,9 +7,11 @@
     flex-wrap: wrap;
 }
 
-.card {
+.cart-card {
+    display: flex;
+    justify-content: space-between;
     background-color: #fff;
-    width: 300px;
+    width: 1300px;
     border-radius: 20px;
     padding: 30px;
     box-shadow: 3px 5px 10px #434040;
@@ -20,47 +20,45 @@
     transition: box-shadow 0.2s linear;
     flex-wrap: wrap;
 }
-    .card:hover {
+
+    .cart-card:hover {
         box-shadow: 7px 14px 30px #434040;
     }
 
 
-.card-name {
-    margin-top: 20px;
-    font-size: 14px;
+.cart-card-name {
+
+    font-size: 25px;
     font-weight: 500;
     text-align: center;
 }
 
-.card-desc {
-    font-size: 12px;
-    font-weight: 300;
-    margin-top: 20px;
+.cart-card-price {
+    font-size: 18px;
 }
 
-.card-bottom {
+.cart-card-info {
     display: flex;
     flex-wrap: wrap;
-    margin-top: 20px;
     justify-content: space-between;
     align-items: center;
 }
 
-.card-counter {
+.cart-card-counter {
     display: flex;
     align-items: center;
 }
 
-.card-counter input {
-    font-family: Gilroy-Medium,sans-serif;
-    background: none;
-    border: 0;
-    outline: 0;
-    font-size: 18px;
-    text-align: center;
-    padding: 0 5px;
-    width: 29px;
-}
+    .cart-card-counter input {
+        font-family: Gilroy-Medium,sans-serif;
+        background: none;
+        border: 0;
+        outline: 0;
+        font-size: 21px;
+        text-align: center;
+        padding: 0 5px;
+        width: 29px;
+    }
 
 .button {
     background-color: #305478;
@@ -74,3 +72,11 @@
     .button:hover {
         background-color: #00008b;
     }
+
+.right {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 500px;
+}

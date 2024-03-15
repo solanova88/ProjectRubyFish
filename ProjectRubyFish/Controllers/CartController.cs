@@ -1,12 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ModelsLibrary;
+using Services;
 
 namespace ProjectRubyFish.Controllers
 {
     public class CartController : Controller
     {
-        public IActionResult Index()
+        private readonly IProductService _productService;
+        public CartController(IProductService productService)
         {
-            return View();
+            _productService = productService;
+        }
+        public async Task<IActionResult> Index()
+        {
+            List<Product> Products = new List<Product>();
+
+            Products = await _productService.GetAllCartProductsAsync();
+
+            return View(Products);
         }
     }
 }

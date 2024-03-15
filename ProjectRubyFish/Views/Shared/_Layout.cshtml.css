@@ -77,6 +77,29 @@ main {
 }
 
 
+cart-button-keeper {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.cart-button-keeper-btn {
+    display: flex;
+    background-color: #00008b;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #eee;
+    border-radius: 20px;
+    transition: background-color 0.3s linear;
+    align-items: center;
+}
+
+.cart-button-keeper-btn:hover {
+    color: #eee;
+    background-color: #7442c8;
+}
+
 
 
 

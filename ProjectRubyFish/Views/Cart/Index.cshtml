@@ -1,8 +1,78 @@
-﻿
-
-<title>Доставка японской еды RubyFish</title>
+﻿<title>Доставка японской еды RubyFish</title>
 
 <h1 align="center">Корзина</h1>
 
 
 
+<form asp-action="cart111" asp-controller="Cart">
+    <div class='cart'>
+
+        @foreach (var product in Model)
+        {
+            <div class='cart-card'>
+                <div class='cart-card-info'>
+                    <div class='cart-card-name'>@product.Title</div>
+                </div>
+                    <div class='right'>
+                        <div class='cart-card-counter'>
+                            <button class="decrement button" type="button" data-product-id="@product.Id">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                                </svg>
+                            </button>
+                            <input type="text" id="quantity_@product.Id" readonly value="@product.Quantity" />
+                            <button class="increment button" type="button" data-product-id="@product.Id">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                </svg>
+                            </button>
+                        </div>
+                    <div class='cart-card-price'>@product.Price р</div>
+                    <button class="delete button" type="button" data-product-id="@product.Id">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                        </svg>
+                    </button>
+                    </div>
+            </div>
+        }
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $('.decrement').click(function () {
+        var productId = $(this).data('product-id');
+
+        $.post("/Catalog/ProductQuantityDecrement", { productId: productId }, function (response) {
+            if (response.success) {
+
+                var quantityElement = $('#quantity_' + productId);
+                var newQuantity = response.quantity;
+                quantityElement.val(newQuantity);
+            } else {
+                alert('Ошибка при уменьшении количества товара.');
+            }
+        }).fail(function () {
+            alert('Ошибка при выполнении AJAX-запроса.');
+        });
+    });
+
+    $('.increment').click(function () {
+        var productId = $(this).data('product-id');
+
+
+        $.post("/Catalog/ProductQuantityIncrement", { productId: productId }, function (response) {
+            if (response.success) {
+
+                var quantityElement = $('#quantity_' + productId);
+                var newQuantity = response.quantity;
+                quantityElement.val(newQuantity);
+            } else {
+                alert('Ошибка при увеличении количества товара.');
+            }
+        }).fail(function () {
+            alert('Ошибка при выполнении AJAX-запроса.');
+        });
+    });
+</script>

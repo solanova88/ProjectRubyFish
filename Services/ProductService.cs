@@ -45,6 +45,11 @@ namespace Services
         {
             return await _context.Products.Where(p => p.Type == ProductType.Combo).ToListAsync();
         }
+        public async Task<List<Product>> GetAllCartProductsAsync()
+        {
+            return await _context.Products.Where(p => p.Quantity > 0).ToListAsync();
+        }
+
 
         public async Task<int?> ProductQuantityIncrementAsync(Guid productId)
         {
