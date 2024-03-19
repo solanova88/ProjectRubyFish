@@ -2,81 +2,161 @@
 <title>Заказ роллов доставка</title>
 
 <h1 align="center">Роллы</h1>
+<style>
+    .catalog {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 100px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        background-color: #fff;
+        width: 300px;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 3px 5px 10px #434040;
+        margin-top: 80px;
+        margin: 20px;
+        transition: box-shadow 0.2s linear;
+        flex-wrap: wrap;
+    }
+
+        .card:hover {
+            box-shadow: 7px 14px 30px #434040;
+        }
+
+    .card-name {
+        margin-top: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .card-desc {
+        font-size: 12px;
+        font-weight: 300;
+        margin-top: 20px;
+    }
+
+    .card-bottom {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 20px;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-counter {
+        display: flex;
+        align-items: center;
+    }
+
+        .card-counter input {
+            font-family: Gilroy-Medium,sans-serif;
+            background: none;
+            border: 0;
+            outline: 0;
+            font-size: 18px;
+            text-align: center;
+            padding: 0 5px;
+            width: 29px;
+        }
+
+    .button {
+        background-color: #305478;
+        padding: 3px;
+        text-decoration: none;
+        color: #eee;
+        border-radius: 10px;
+        transition: background-color 0.3s linear;
+    }
+
+        .button:hover {
+            background-color: #00008b;
+        }
+</style>
 
 <form asp-action="Rolls" asp-controller="Catalog">
     <div class='catalog'>
-
         @foreach (var roll in Model)
         {
             <div class='card'>
                 <div class='card-text'>
-                    <div class='card-name'>@roll.Title</div>
-
-                    <div class='card-desc'>
-                        @roll.Description
-                    </div>
+                    <div class='card-name'>@roll.Name</div>
+                    <div class='card-desc'>@roll.Description</div>
                 </div>
                 <div class='card-bottom'>
                     <div class='card-price'>@roll.Price р</div>
                     <div class='card-counter'>
-                        <button class="decrement button" type ="button" data-product-id="@roll.Id">
+                        <button class="decrement button" type="button" data-product-id="@roll.Id">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
                                 <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
                             </svg>
                         </button>
-
-                        <input type="text" id="quantity_@roll.Id" readonly value="@roll.Quantity" />
+                        <input type="text" id="quantity_@roll.Id" readonly value="0" />
                         <button class="increment button" type="button" data-product-id="@roll.Id">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
                             </svg>
                         </button>
-
                     </div>
-
                 </div>
             </div>
         }
     </div>
 </form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $('.decrement').click(function () {
-        var productId = $(this).data('product-id');
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            
+            const decrementButtons = document.querySelectorAll(".decrement");
+            const incrementButtons = document.querySelectorAll(".increment");
 
-        $.post("/Catalog/ProductQuantityDecrement", { productId: productId }, function (response) {
-            if (response.success) {
 
-                var quantityElement = $('#quantity_' + productId);
-                var newQuantity = response.quantity;
-                quantityElement.val(newQuantity);
-            } else {
-                alert('Ошибка при уменьшении количества товара.');
+            function getQuantity(productId) {
+                return localStorage.getItem(`quantity_${productId}`) || 0;
             }
-        }).fail(function () {
-            alert('Ошибка при выполнении AJAX-запроса.');
-        });
-    });
-
-    $('.increment').click(function () {
-        var productId = $(this).data('product-id');
 
 
-        $.post("/Catalog/ProductQuantityIncrement", { productId: productId }, function (response) {
-            if (response.success) {
-
-                var quantityElement = $('#quantity_' + productId);
-                var newQuantity = response.quantity;
-                quantityElement.val(newQuantity);
-            } else {
-                alert('Ошибка при увеличении количества товара.');
+            function saveQuantity(productId, quantity) {
+                localStorage.setItem(`quantity_${productId}`, quantity);
             }
-        }).fail(function () {
-            alert('Ошибка при выполнении AJAX-запроса.');
+
+
+            document.querySelectorAll(".card-counter input").forEach(input => {
+                const productId = input.id.split('_')[1];
+                input.value = getQuantity(productId);
+            });
+
+
+            decrementButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    const productId = button.dataset.productId;
+                    const quantityInput = document.getElementById(`quantity_${productId}`);
+                    let quantity = parseInt(quantityInput.value);
+                    if (quantity > 0) {
+                        quantity--;
+                        quantityInput.value = quantity;
+                        saveQuantity(productId, quantity);
+                    }
+                });
+            });
+
+            incrementButtons.forEach(button => {
+                button.addEventListener("click", function () {
+                    const productId = button.dataset.productId;
+                    const quantityInput = document.getElementById(`quantity_${productId}`);
+                    let quantity = parseInt(quantityInput.value);
+                    quantity++;
+                    quantityInput.value = quantity;
+                    saveQuantity(productId, quantity); 
+                });
+            });
         });
-    });
-</script>
-
-
-
+    </script>
+}

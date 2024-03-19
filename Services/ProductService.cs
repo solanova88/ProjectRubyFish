@@ -20,6 +20,10 @@ namespace Services
         {
             _context = context;
         }
+        public async Task<List<Product>> GetAllProductAsync()
+        {
+            return await _context.Products.ToListAsync();
+        }
 
         public async Task<List<Product>> GetAllRollAsync()
         {
@@ -44,36 +48,6 @@ namespace Services
         public async Task<List<Product>> GetAllComboAsync()
         {
             return await _context.Products.Where(p => p.Type == ProductType.Combo).ToListAsync();
-        }
-        public async Task<List<Product>> GetAllCartProductsAsync()
-        {
-            return await _context.Products.Where(p => p.Quantity > 0).ToListAsync();
-        }
-
-
-        public async Task<int?> ProductQuantityIncrementAsync(Guid productId)
-        {
-            var productToUpdate = await _context.Products.FindAsync(productId);
-
-            if (productToUpdate != null)
-            {
-                productToUpdate.Quantity++;
-                await _context.SaveChangesAsync();
-                return productToUpdate.Quantity;
-            }
-            return null;
-        }
-        public async Task<int?> ProductQuantityDecrementAsync(Guid productId)
-        {
-            var productToUpdate = await _context.Products.FindAsync(productId);
-
-            if (productToUpdate != null && productToUpdate.Quantity > 0)
-            {
-                productToUpdate.Quantity--;
-                await _context.SaveChangesAsync();
-                return productToUpdate.Quantity;
-            }
-            return 0;
         }
     }
 }

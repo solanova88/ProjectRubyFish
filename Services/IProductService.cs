@@ -9,16 +9,12 @@ namespace Services
 {
     public interface IProductService
     {
+        Task<List<Product>> GetAllProductAsync();
         Task<List<Product>> GetAllRollAsync();
         Task<List<Product>> GetAllSetAsync();
         Task<List<Product>> GetAllPizzaAsync();
         Task<List<Product>> GetAllDrinksAsync();
         Task<List<Product>> GetAllDessertsAsync();
         Task<List<Product>> GetAllComboAsync();
-        Task<List<Product>> GetAllCartProductsAsync();
-
-        Task<int?> ProductQuantityIncrementAsync(Guid productId);
-        Task<int?> ProductQuantityDecrementAsync(Guid productId);
-
     }
 }

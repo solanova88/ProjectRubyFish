@@ -1,77 +1,210 @@
-﻿<title>Доставка японской еды RubyFish</title>
+﻿<title>Корзина</title>
 
+<h1 align="center">Корзина</h1>
+<style>
+    .cart {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 100px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
 
+    .cart-card {
+        display: flex;
+        justify-content: space-between;
+        background-color: #fff;
+        width: 1300px;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 3px 5px 10px #434040;
+        margin-top: 80px;
+        margin: 20px;
+        transition: box-shadow 0.2s linear;
+        flex-wrap: wrap;
+    }
 
-
-<form asp-action="cart111" asp-controller="Cart">
-    <div class='cart'>
-
-        @foreach (var product in Model)
-        {
-            <div class='cart-card'>
-                <div class='cart-card-info'>
-                    <div class='cart-card-name'>@product.Title</div>
-                </div>
-                    <div class='right'>
-                        <div class='cart-card-counter'>
-                            <button class="decrement button" type="button" data-product-id="@product.Id">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
-                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
-                                </svg>
-                            </button>
-                            <input type="text" id="quantity_@product.Id" readonly value="@product.Quantity" />
-                            <button class="increment button" type="button" data-product-id="@product.Id">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                                </svg>
-                            </button>
-                        </div>
-                    <div class='cart-card-price'>@product.Price р</div>
-                    <button class="delete button" type="button" data-product-id="@product.Id">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
-                        </svg>
-                    </button>
-                    </div>
-            </div>
+        .cart-card:hover {
+            box-shadow: 7px 14px 30px #434040;
         }
+
+
+    .cart-card-name {
+        font-size: 25px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .cart-card-price {
+        font-size: 18px;
+    }
+
+    .cart-card-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .cart-card-counter {
+        display: flex;
+        align-items: center;
+    }
+
+        .cart-card-counter input {
+            font-family: Gilroy-Medium,sans-serif;
+            background: none;
+            border: 0;
+            outline: 0;
+            font-size: 21px;
+            text-align: center;
+            padding: 0 5px;
+            width: 29px;
+        }
+
+    .button {
+        background-color: #305478;
+        padding: 3px;
+        text-decoration: none;
+        color: #eee;
+        border-radius: 10px;
+        transition: background-color 0.3s linear;
+    }
+
+        .button:hover {
+            background-color: #00008b;
+        }
+
+    .right {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 500px;
+    }
+    </style>
+
+    <div class='cart'>
+        
     </div>
-</form>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    $('.decrement').click(function () {
-        var productId = $(this).data('product-id');
+    document.addEventListener("DOMContentLoaded", function () {
+        $(document).ready(function () {
 
-        $.post("/Catalog/ProductQuantityDecrement", { productId: productId }, function (response) {
-            if (response.success) {
+            var productsData = JSON.parse(sessionStorage.getItem('productsData'));
+            console.log(productsData);
+            console.log(sessionStorage.getItem('productsData'));
 
-                var quantityElement = $('#quantity_' + productId);
-                var newQuantity = response.quantity;
-                quantityElement.val(newQuantity);
+            if (productsData) {
+
+                var products = productsData;
+
+                renderProducts(products);
             } else {
-                alert('Ошибка при уменьшении количества товара.');
+
+                $.ajax({
+                    url: '@Url.Action("GetProducts", "Cart")',
+                    method: 'GET',
+                    success: function (data) {
+
+                        sessionStorage.setItem('productsData', JSON.stringify(data));
+
+                        renderProducts(data);
+                    },
+                    error: function (error) {
+                        console.error('Error fetching products data:', error);
+                    }
+                });
             }
-        }).fail(function () {
-            alert('Ошибка при выполнении AJAX-запроса.');
         });
-    });
+        const decrementButtons = document.querySelectorAll(".decrement");
+        const incrementButtons = document.querySelectorAll(".increment");
 
-    $('.increment').click(function () {
-        var productId = $(this).data('product-id');
+        function getQuantity(productId) {
+            return localStorage.getItem(`quantity_${productId}`);
+        }
 
+        function saveQuantity(productId, quantity) {
+            localStorage.setItem(`quantity_${productId}`, quantity);
+        }
 
-        $.post("/Catalog/ProductQuantityIncrement", { productId: productId }, function (response) {
-            if (response.success) {
+        $(document).on("click", ".decrement", function () {
+            const productId = $(this).data('productId');
+            let quantity = parseInt(getQuantity(productId));
+            if (quantity > 0) {
+                if (quantity != 1) {
+                    quantity--;
+                    saveQuantity(productId, quantity);
+                    $('#quantity_' + productId).val(getQuantity(productId));
+                }
+                else 
+                {
+                    quantity--;
+                    saveQuantity(productId, quantity);
+                    renderProducts(JSON.parse(sessionStorage.getItem('productsData')));
+                }
 
-                var quantityElement = $('#quantity_' + productId);
-                var newQuantity = response.quantity;
-                quantityElement.val(newQuantity);
-            } else {
-                alert('Ошибка при увеличении количества товара.');
             }
-        }).fail(function () {
-            alert('Ошибка при выполнении AJAX-запроса.');
         });
+
+        $(document).on("click", ".increment", function () {
+            const productId = $(this).data('productId');
+            let quantity = parseInt(getQuantity(productId));
+            quantity++;
+            saveQuantity(productId, quantity);
+            $('#quantity_' + productId).val(getQuantity(productId));
+        });
+        $(document).on("click", ".delete", function () {
+            const productId = $(this).data('productId');
+            let quantity = parseInt(getQuantity(productId));
+            quantity = 0;
+            saveQuantity(productId, quantity);
+            renderProducts(JSON.parse(sessionStorage.getItem('productsData')));
+        });
+
+        function renderProducts(data) {
+            var cartDiv = $('.cart');
+            cartDiv.empty();
+
+
+            data.forEach(function (product) {
+                if (getQuantity(product.id) > 0) {
+                    var html =
+                        `<div class='cart-card'>
+                                    <div class='cart-card-info'>
+                                        <div class='cart-card-name'>${product.name}</div>
+                                    </div>
+                                    <div class='right'>
+                                        <div class='cart-card-counter'>
+                                            <button class="decrement button" type="button" data-product-id="${product.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                                                </svg>
+                                            </button>
+                                            <input type="text" id="quantity_${product.id}" readonly value="${getQuantity(product.id)}" />
+                                            <button class="increment button" type="button" data-product-id="${product.id}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class='cart-card-price'>${product.price} р</div>
+                                        <button class="delete button" type="button" data-product-id="${product.id}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>`;
+
+                    cartDiv.append(html);
+                }
+            });
+        }
     });
 </script>

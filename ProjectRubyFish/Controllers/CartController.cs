@@ -11,13 +11,16 @@ namespace ProjectRubyFish.Controllers
         {
             _productService = productService;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            List<Product> Products = new List<Product>();
+            return View();
+        }
 
-            Products = await _productService.GetAllCartProductsAsync();
-
-            return View(Products);
+        [HttpGet]
+        public async Task<JsonResult> GetProducts()
+        {
+            List<Product> products = await _productService.GetAllProductAsync();
+            return Json(products);
         }
     }
 }
