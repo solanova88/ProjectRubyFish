@@ -22,7 +22,7 @@ namespace ProjectRubyFish.Controllers
 
         public async Task<IActionResult> Rolls()
         {
-            List<Product> rolls = await _productService.GetAllRollAsync();
+            var rolls = await _productService.GetAllRollAsync();
             return View(rolls);
         }
 

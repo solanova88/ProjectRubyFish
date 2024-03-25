@@ -1,16 +1,25 @@
 ﻿<title>Корзина</title>
 
-<h1 align="center">Корзина</h1>
+<h1 class="cart-header" align="center">Корзина</h1>
 <style>
     .cart {
         display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
+        flex-direction: column;
         padding: 100px;
         margin-top: 40px;
         flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        min-height: 600px;
+    }
+    .cart-table {
+        min-height: 500px;
+        border-bottom: 1px solid rgb(128 128 128 / 50%);
     }
 
+    .empty-card-message{
+        font-size: 40px;
+    }
     .cart-card {
         display: flex;
         justify-content: space-between;
@@ -75,6 +84,19 @@
         .button:hover {
             background-color: #00008b;
         }
+    .order{
+        text-decoration: none;
+        color: #eee;
+        background-color: #00008b;
+        transition: background-color 0.3s linear;
+        padding: 20px;
+        font-size: 18px;
+    }
+
+        .order:hover{
+            background-color: #7442c8;
+        }
+
 
     .right {
         display: flex;
@@ -83,128 +105,187 @@
         flex-wrap: wrap;
         width: 500px;
     }
+
+    .cart-cost {
+        display: flex;
+        justify-content: space-between;
+        background-color: #fff;
+        width: 900px;
+        border-radius: 20px;
+        padding: 30px;
+        margin-top: 80px;
+        margin: 20px;
+        flex-wrap: wrap;
+    }
+
+    .cart-cost-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        width: 200px;
+    }
+
+    .cart-cost-info-totalammount {
+        font-size: 25px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .cost-right {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 200px;
+    }
     </style>
 
-    <div class='cart'>
-        
+<div class='cart'>
+    <div class='empty-card-message' style="display: none;">Корзина пуста!</div>
+    <div class='cart-table'>
     </div>
-
+    <div class='cost' style="display: none;">
+        <div class='cart-cost'>
+            <div class='cart-cost-info'>
+                <div class='cart-cost-info-totalammount'>Итого: <span class="total-amount"></span></div>
+            </div>
+            <div class='cost-right'>
+                <button class="order button" type="submit">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         $(document).ready(function () {
+            renderProducts(getProductsData());
 
-            var productsData = JSON.parse(sessionStorage.getItem('productsData'));
-            console.log(productsData);
-            console.log(sessionStorage.getItem('productsData'));
-
-            if (productsData) {
-
-                var products = productsData;
-
-                renderProducts(products);
-            } else {
-
-                $.ajax({
-                    url: '@Url.Action("GetProducts", "Cart")',
-                    method: 'GET',
-                    success: function (data) {
-
-                        sessionStorage.setItem('productsData', JSON.stringify(data));
-
-                        renderProducts(data);
-                    },
-                    error: function (error) {
-                        console.error('Error fetching products data:', error);
-                    }
-                });
+            function getProductsData() {
+                return JSON.parse(localStorage.getItem('productsData')) || [];
             }
-        });
-        const decrementButtons = document.querySelectorAll(".decrement");
-        const incrementButtons = document.querySelectorAll(".increment");
 
-        function getQuantity(productId) {
-            return localStorage.getItem(`quantity_${productId}`);
-        }
-
-        function saveQuantity(productId, quantity) {
-            localStorage.setItem(`quantity_${productId}`, quantity);
-        }
-
-        $(document).on("click", ".decrement", function () {
-            const productId = $(this).data('productId');
-            let quantity = parseInt(getQuantity(productId));
-            if (quantity > 0) {
-                if (quantity != 1) {
-                    quantity--;
-                    saveQuantity(productId, quantity);
-                    $('#quantity_' + productId).val(getQuantity(productId));
-                }
-                else 
-                {
-                    quantity--;
-                    saveQuantity(productId, quantity);
-                    renderProducts(JSON.parse(sessionStorage.getItem('productsData')));
-                }
-
+            function saveProductsData(productsData) {
+                localStorage.setItem('productsData', JSON.stringify(productsData));
             }
-        });
 
-        $(document).on("click", ".increment", function () {
-            const productId = $(this).data('productId');
-            let quantity = parseInt(getQuantity(productId));
-            quantity++;
-            saveQuantity(productId, quantity);
-            $('#quantity_' + productId).val(getQuantity(productId));
-        });
-        $(document).on("click", ".delete", function () {
-            const productId = $(this).data('productId');
-            let quantity = parseInt(getQuantity(productId));
-            quantity = 0;
-            saveQuantity(productId, quantity);
-            renderProducts(JSON.parse(sessionStorage.getItem('productsData')));
-        });
-
-        function renderProducts(data) {
-            var cartDiv = $('.cart');
-            cartDiv.empty();
-
-
-            data.forEach(function (product) {
-                if (getQuantity(product.id) > 0) {
-                    var html =
-                        `<div class='cart-card'>
-                                    <div class='cart-card-info'>
-                                        <div class='cart-card-name'>${product.name}</div>
-                                    </div>
-                                    <div class='right'>
-                                        <div class='cart-card-counter'>
-                                            <button class="decrement button" type="button" data-product-id="${product.id}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
-                                                    <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
-                                                </svg>
-                                            </button>
-                                            <input type="text" id="quantity_${product.id}" readonly value="${getQuantity(product.id)}" />
-                                            <button class="increment button" type="button" data-product-id="${product.id}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <div class='cart-card-price'>${product.price} р</div>
-                                        <button class="delete button" type="button" data-product-id="${product.id}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+            function renderProducts(data) {
+                var cartDiv = $('.cart-table');
+                var totalAmount = 0;
+                cartDiv.empty();
+                data.forEach(function (product) {
+                    if (product.quantity > 0) {
+                        var html =
+                            `<div class='cart-card'>
+                                <div class='cart-card-info'>
+                                    <div class='cart-card-name'>${product.name}</div>
+                                </div>
+                                <div class='right'>
+                                    <div class='cart-card-counter'>
+                                        <button class="decrement button" type="button" data-product-id="${product.id}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                                            </svg>
+                                        </button>
+                                        <input type="text" id="quantity_${product.id}" readonly value="${product.quantity}" />
+                                        <button class="increment button" type="button" data-product-id="${product.id}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
                                             </svg>
                                         </button>
                                     </div>
-                                </div>`;
+                                    <div class='cart-card-price'>${product.price} р</div>
+                                    <button class="delete button" type="button" data-product-id="${product.id}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>`;
+                        cartDiv.append(html);
+                        totalAmount += product.price * product.quantity;
+                    }
+                });
+                if (totalAmount > 0) {
+                    $('.empty-card-message').hide();
+                    $('.cart-header').show();
+                    $('.cart-table').show();
+                    $('.cost').show();
+                    $('.total-amount').text(totalAmount + ' р');
+                } else {
+                    $('.cart-header').hide();
+                    $('.empty-card-message').show();
+                    $('.cost').hide();
+                    $('.cart-table').hide();
+                }
+            }
 
-                    cartDiv.append(html);
+            $(document).on('click', '.decrement', function (event) {
+                const productId = $(this).data('product-id');
+                const productsData = getProductsData();
+                const productIndex = productsData.findIndex(product => product.id === productId);
+                if (productIndex !== -1) {
+                    const quantity = productsData[productIndex].quantity;
+                    if (quantity > 0) {
+                        if (quantity != 1) {
+                            productsData[productIndex].quantity = quantity - 1;
+                            saveProductsData(productsData);
+                            const quantityInput = $(`#quantity_${productId}`);
+                            quantityInput.val(productsData[productIndex].quantity);
+                        } else {
+                            productsData[productIndex].quantity = quantity - 1;
+                            saveProductsData(productsData);
+                            renderProducts(getProductsData());
+                        }
+                        updateTotalAmount();
+                    }
                 }
             });
-        }
+
+            $(document).on('click', '.increment', function (event) {
+                const productId = $(this).data('product-id');
+                const productsData = getProductsData();
+                const productIndex = productsData.findIndex(product => product.id === productId);
+                if (productIndex !== -1) {
+                    const quantity = productsData[productIndex].quantity;
+                    productsData[productIndex].quantity = quantity + 1;
+                    saveProductsData(productsData);
+                    const quantityInput = $(`#quantity_${productId}`);
+                    quantityInput.val(productsData[productIndex].quantity);
+                    updateTotalAmount();
+                }
+            });
+
+            $(document).on('click', '.delete', function (event) {
+                const productId = $(this).data('product-id');
+                const productsData = getProductsData();
+                const productIndex = productsData.findIndex(product => product.id === productId);
+                if (productIndex !== -1) {
+                    productsData[productIndex].quantity = 0;
+                    saveProductsData(productsData);
+                    renderProducts(getProductsData());
+                    updateTotalAmount();
+                }
+            });
+
+            function updateTotalAmount() {
+                var productsData = getProductsData();
+                var totalAmount = productsData.reduce(function (total, product) {
+                    return total + (product.price * product.quantity);
+                }, 0);
+                if (totalAmount > 0) {
+                    $('.total-amount').text(totalAmount + ' р');
+                } else {
+                    $('.cart-header').hide();
+                    $('.empty-card-message').show();
+                    $('.cart-table').hide();
+                    $('.cost').hide();
+                }
+            }
+        });
     });
 </script>
+

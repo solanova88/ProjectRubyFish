@@ -19,7 +19,7 @@ namespace ProjectRubyFish.Controllers
         [HttpGet]
         public async Task<JsonResult> GetProducts()
         {
-            List<Product> products = await _productService.GetAllProductAsync();
+            var products = await _productService.GetAllProductAsync();
             return Json(products);
         }
     }

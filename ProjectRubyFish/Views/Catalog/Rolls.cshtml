@@ -113,36 +113,39 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            
             const decrementButtons = document.querySelectorAll(".decrement");
             const incrementButtons = document.querySelectorAll(".increment");
 
-
-            function getQuantity(productId) {
-                return localStorage.getItem(`quantity_${productId}`) || 0;
+            function getProductsData() {
+                return JSON.parse(localStorage.getItem('productsData')) || [];
             }
 
-
-            function saveQuantity(productId, quantity) {
-                localStorage.setItem(`quantity_${productId}`, quantity);
+            function saveProductsData(productsData) {
+                localStorage.setItem('productsData', JSON.stringify(productsData));
             }
-
 
             document.querySelectorAll(".card-counter input").forEach(input => {
                 const productId = input.id.split('_')[1];
-                input.value = getQuantity(productId);
+                const productsData = getProductsData();
+                const product = productsData.find(product => product.id === productId);
+                if (product) {
+                    input.value = product.quantity || 0;
+                }
             });
-
 
             decrementButtons.forEach(button => {
                 button.addEventListener("click", function () {
                     const productId = button.dataset.productId;
-                    const quantityInput = document.getElementById(`quantity_${productId}`);
-                    let quantity = parseInt(quantityInput.value);
-                    if (quantity > 0) {
-                        quantity--;
-                        quantityInput.value = quantity;
-                        saveQuantity(productId, quantity);
+                    const productsData = getProductsData();
+                    const productIndex = productsData.findIndex(product => product.id === productId);
+                    if (productIndex !== -1) {
+                        const quantity = productsData[productIndex].quantity || 0;
+                        if (quantity > 0) {
+                            productsData[productIndex].quantity = quantity - 1;
+                            saveProductsData(productsData);
+                            const quantityInput = document.getElementById(`quantity_${productId}`);
+                            quantityInput.value = productsData[productIndex].quantity;
+                        }
                     }
                 });
             });
@@ -150,13 +153,18 @@
             incrementButtons.forEach(button => {
                 button.addEventListener("click", function () {
                     const productId = button.dataset.productId;
-                    const quantityInput = document.getElementById(`quantity_${productId}`);
-                    let quantity = parseInt(quantityInput.value);
-                    quantity++;
-                    quantityInput.value = quantity;
-                    saveQuantity(productId, quantity); 
+                    const productsData = getProductsData();
+                    const productIndex = productsData.findIndex(product => product.id === productId);
+                    if (productIndex !== -1) {
+                        const quantity = productsData[productIndex].quantity || 0;
+                        productsData[productIndex].quantity = quantity + 1;
+                        saveProductsData(productsData);
+                        const quantityInput = document.getElementById(`quantity_${productId}`);
+                        quantityInput.value = productsData[productIndex].quantity;
+                    }
                 });
             });
         });
+
     </script>
 }

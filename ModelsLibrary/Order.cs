@@ -12,7 +12,6 @@ namespace ModelsLibrary
         public DateTime OrderDateTime { get; set; }
         public OrderStatus Status { get; set; }
         public string DeliveryAddress { get; set; }
-        public decimal TotalAmount { get; set; }
         public List<OrderDetail> OrderDetails { get; set; } // Детали заказа
 
         public Order()
