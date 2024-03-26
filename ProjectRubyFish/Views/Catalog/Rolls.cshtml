@@ -85,11 +85,11 @@
         {
             <div class='card'>
                 <div class='card-text'>
-                    <div class='card-name'>@roll.Name</div>
+                    <div class='card-name' id="name_@roll.Id">@roll.Name</div>
                     <div class='card-desc'>@roll.Description</div>
                 </div>
                 <div class='card-bottom'>
-                    <div class='card-price'>@roll.Price р</div>
+                    <div class='card-price' id="price_@roll.Id">@roll.Price р</div>
                     <div class='card-counter'>
                         <button class="decrement button" type="button" data-product-id="@roll.Id">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
@@ -113,58 +113,84 @@
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const decrementButtons = document.querySelectorAll(".decrement");
-            const incrementButtons = document.querySelectorAll(".increment");
+            function updateLocalStorage(productId, productName, quantity, price) {
 
-            function getProductsData() {
-                return JSON.parse(localStorage.getItem('productsData')) || [];
+                var order = JSON.parse(localStorage.getItem('order')) || { products: [], totalAmount: 0 };
+
+                // Удаление продукта из массива, если его количество равно 0
+                order.products = order.products.filter(product => product.id !== productId);
+
+                // Добавление продукта в массив с учетом его количества
+                if (quantity > 0) {
+                    order.products.push({
+                        id: productId,
+                        name: productName,
+                        price: price,
+                        quantity: quantity
+                    });
+                }
+
+                // Пересчет общей стоимости заказа
+                order.totalAmount = order.products.reduce((total, product) => total + (product.price * product.quantity), 0);
+
+                // Обновление LocalStorage
+                localStorage.setItem('order', JSON.stringify(order));
             }
 
-            function saveProductsData(productsData) {
-                localStorage.setItem('productsData', JSON.stringify(productsData));
-            }
-
+            // Функция для загрузки данных из LocalStorage и установки значений в поля ввода
             document.querySelectorAll(".card-counter input").forEach(input => {
                 const productId = input.id.split('_')[1];
-                const productsData = getProductsData();
-                const product = productsData.find(product => product.id === productId);
+                const order = JSON.parse(localStorage.getItem('order')) || { products: [], totalAmount: 0 };
+                const product = order.products.find(product => product.id === productId);
                 if (product) {
                     input.value = product.quantity || 0;
                 }
             });
 
-            decrementButtons.forEach(button => {
-                button.addEventListener("click", function () {
-                    const productId = button.dataset.productId;
-                    const productsData = getProductsData();
-                    const productIndex = productsData.findIndex(product => product.id === productId);
-                    if (productIndex !== -1) {
-                        const quantity = productsData[productIndex].quantity || 0;
-                        if (quantity > 0) {
-                            productsData[productIndex].quantity = quantity - 1;
-                            saveProductsData(productsData);
-                            const quantityInput = document.getElementById(`quantity_${productId}`);
-                            quantityInput.value = productsData[productIndex].quantity;
-                        }
-                    }
+            // Обработчики событий для кнопок увеличения и уменьшения количества товара
+            document.querySelectorAll('.increment').forEach(button => {
+                button.addEventListener('click', function () {
+                    var productId = this.dataset.productId;
+                    var quantityElement = document.getElementById('quantity_' + productId);
+                    var quantity = parseInt(quantityElement.value) + 1;
+                    quantityElement.value = quantity;
+
+                    // Получаем имя товара из элемента с id, который вы добавили
+                    var productNameElement = document.getElementById('name_' + productId);
+                    var productName = productNameElement.innerText;
+
+                    // Получаем цену товара из элемента с id, который вы добавили
+                    var priceElement = document.getElementById('price_' + productId);
+                    var priceText = priceElement.innerText;
+                    var priceMatch = priceText.match(/(\d+(\.\d+)?) р/);
+                    var price = parseFloat(priceMatch[1]);
+
+                    updateLocalStorage(productId, productName, quantity, price);
                 });
             });
 
-            incrementButtons.forEach(button => {
-                button.addEventListener("click", function () {
-                    const productId = button.dataset.productId;
-                    const productsData = getProductsData();
-                    const productIndex = productsData.findIndex(product => product.id === productId);
-                    if (productIndex !== -1) {
-                        const quantity = productsData[productIndex].quantity || 0;
-                        productsData[productIndex].quantity = quantity + 1;
-                        saveProductsData(productsData);
-                        const quantityInput = document.getElementById(`quantity_${productId}`);
-                        quantityInput.value = productsData[productIndex].quantity;
-                    }
+            document.querySelectorAll('.decrement').forEach(button => {
+                button.addEventListener('click', function () {
+                    var productId = this.dataset.productId;
+                    var quantityElement = document.getElementById('quantity_' + productId);
+                    var quantity = parseInt(quantityElement.value) - 1;
+                    quantity = quantity < 0 ? 0 : quantity;
+                    quantityElement.value = quantity;
+
+                    // Получаем имя товара из элемента с id, который вы добавили
+                    var productNameElement = document.getElementById('name_' + productId);
+                    var productName = productNameElement.innerText;
+
+                    // Получаем цену товара из элемента с id, который вы добавили
+                    var priceElement = document.getElementById('price_' + productId);
+                    var priceText = priceElement.innerText;
+                    var priceMatch = priceText.match(/(\d+(\.\d+)?) р/);
+                    var price = parseFloat(priceMatch[1]);
+
+                    updateLocalStorage(productId, productName, quantity, price);
                 });
             });
+
         });
-
     </script>
 }

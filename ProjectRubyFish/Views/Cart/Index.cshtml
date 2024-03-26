@@ -151,7 +151,9 @@
                 <div class='cart-cost-info-totalammount'>Итого: <span class="total-amount"></span></div>
             </div>
             <div class='cost-right'>
-                <button class="order button" type="submit">Оформить заказ</button>
+                <a class="action-btn" style="text-decoration: none;" asp-controller="Cart" asp-action="Order">
+                    <div class='order button'>Оформить заказ</div>
+                </a>
             </div>
         </div>
     </div>
@@ -165,18 +167,28 @@
             renderProducts(getProductsData());
 
             function getProductsData() {
-                return JSON.parse(localStorage.getItem('productsData')) || [];
+                return JSON.parse(localStorage.getItem('order')) || { products: [], totalAmount: 0 };
             }
 
-            function saveProductsData(productsData) {
-                localStorage.setItem('productsData', JSON.stringify(productsData));
+            function updateLocalStorage(product) {
+                var order = getProductsData();
+                // Обновление продукта в заказе
+                order.products = order.products.map(p => p.id === product.id ? product : p);
+                // Удаление продукта из заказа, если его количество равно 0
+                if (product.quantity === 0) {
+                    order.products = order.products.filter(p => p.id !== product.id);
+                }
+                // Пересчет общей стоимости заказа
+                order.totalAmount = order.products.reduce((total, p) => total + (p.price * p.quantity), 0);
+                // Обновление LocalStorage
+                localStorage.setItem('order', JSON.stringify(order));
+                $('.total-amount').text(order.totalAmount + ' р');
             }
 
-            function renderProducts(data) {
+            function renderProducts(order) {
                 var cartDiv = $('.cart-table');
-                var totalAmount = 0;
                 cartDiv.empty();
-                data.forEach(function (product) {
+                order.products.forEach(function (product) {
                     if (product.quantity > 0) {
                         var html =
                             `<div class='cart-card'>
@@ -206,15 +218,15 @@
                                 </div>
                             </div>`;
                         cartDiv.append(html);
-                        totalAmount += product.price * product.quantity;
                     }
                 });
-                if (totalAmount > 0) {
+
+                if (order.totalAmount > 0) {
                     $('.empty-card-message').hide();
                     $('.cart-header').show();
                     $('.cart-table').show();
                     $('.cost').show();
-                    $('.total-amount').text(totalAmount + ' р');
+                    $('.total-amount').text(order.totalAmount + ' р');
                 } else {
                     $('.cart-header').hide();
                     $('.empty-card-message').show();
@@ -223,68 +235,52 @@
                 }
             }
 
+
+
             $(document).on('click', '.decrement', function (event) {
                 const productId = $(this).data('product-id');
-                const productsData = getProductsData();
-                const productIndex = productsData.findIndex(product => product.id === productId);
+                const order = getProductsData();
+                const productIndex = order.products.findIndex(product => product.id === productId);
                 if (productIndex !== -1) {
-                    const quantity = productsData[productIndex].quantity;
+                    const quantity = order.products[productIndex].quantity;
                     if (quantity > 0) {
                         if (quantity != 1) {
-                            productsData[productIndex].quantity = quantity - 1;
-                            saveProductsData(productsData);
+                            order.products[productIndex].quantity = quantity - 1;
+                            updateLocalStorage(order.products[productIndex]);
                             const quantityInput = $(`#quantity_${productId}`);
-                            quantityInput.val(productsData[productIndex].quantity);
+                            quantityInput.val(order.products[productIndex].quantity);
                         } else {
-                            productsData[productIndex].quantity = quantity - 1;
-                            saveProductsData(productsData);
-                            renderProducts(getProductsData());
+                            order.products[productIndex].quantity = quantity - 1;
+                            updateLocalStorage(order.products[productIndex]);
+                            renderProducts(getProductsData())
                         }
-                        updateTotalAmount();
                     }
                 }
             });
 
             $(document).on('click', '.increment', function (event) {
                 const productId = $(this).data('product-id');
-                const productsData = getProductsData();
-                const productIndex = productsData.findIndex(product => product.id === productId);
+                const order = getProductsData();
+                const productIndex = order.products.findIndex(product => product.id === productId);
                 if (productIndex !== -1) {
-                    const quantity = productsData[productIndex].quantity;
-                    productsData[productIndex].quantity = quantity + 1;
-                    saveProductsData(productsData);
+                    const quantity = order.products[productIndex].quantity;
+                    order.products[productIndex].quantity = quantity + 1;
+                    updateLocalStorage(order.products[productIndex]);
                     const quantityInput = $(`#quantity_${productId}`);
-                    quantityInput.val(productsData[productIndex].quantity);
-                    updateTotalAmount();
+                    quantityInput.val(order.products[productIndex].quantity);
                 }
             });
 
             $(document).on('click', '.delete', function (event) {
                 const productId = $(this).data('product-id');
-                const productsData = getProductsData();
-                const productIndex = productsData.findIndex(product => product.id === productId);
+                const order = getProductsData();
+                const productIndex = order.products.findIndex(product => product.id === productId);
                 if (productIndex !== -1) {
-                    productsData[productIndex].quantity = 0;
-                    saveProductsData(productsData);
+                    order.products[productIndex].quantity = 0;
+                    updateLocalStorage(order.products[productIndex]);
                     renderProducts(getProductsData());
-                    updateTotalAmount();
                 }
             });
-
-            function updateTotalAmount() {
-                var productsData = getProductsData();
-                var totalAmount = productsData.reduce(function (total, product) {
-                    return total + (product.price * product.quantity);
-                }, 0);
-                if (totalAmount > 0) {
-                    $('.total-amount').text(totalAmount + ' р');
-                } else {
-                    $('.cart-header').hide();
-                    $('.empty-card-message').show();
-                    $('.cart-table').hide();
-                    $('.cost').hide();
-                }
-            }
         });
     });
 </script>

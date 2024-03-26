@@ -22,5 +22,9 @@ namespace ProjectRubyFish.Controllers
             var products = await _productService.GetAllProductAsync();
             return Json(products);
         }
+        public IActionResult Order()
+        {
+            return View();
+        }
     }
 }

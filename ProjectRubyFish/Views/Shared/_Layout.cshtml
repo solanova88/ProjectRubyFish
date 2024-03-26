@@ -104,39 +104,6 @@
             </article>
         </main>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            $(document).ready(function () {
-                var productsData = JSON.parse(localStorage.getItem('productsData'));
-                console.log(productsData);
-                console.log(localStorage.getItem('productsData'));
-                if (productsData == null) {
-                    $.ajax({
-                        url: '@Url.Action("GetProducts", "Cart")',
-                        method: 'GET',
-                        success: function (data) {
-                            // Изменяем структуру данных
-                            var modifiedData = data.map(function (product) {
-                                return {
-                                    id: product.id,
-                                    name: product.name,
-                                    price: product.price,
-                                    quantity: 0 // Добавляем поле quantity со значением 0
-                                };
-                            });
-
-                            // Сохраняем измененные данные в localStorage
-                            localStorage.setItem('productsData', JSON.stringify(modifiedData));
-                        },
-                        error: function (error) {
-                            console.error('Error fetching products data:', error);
-                        }
-                    });
-                }
-            });
-        });
-    </script>
     @RenderSection("Scripts", required: false)
 </body>
 

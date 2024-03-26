@@ -9,8 +9,8 @@ namespace ModelsLibrary
     public class OrderDetail
     {
         public Guid Id { get; set; }
-        public Guid OrderId { get; set; } // Внешний ключ к заказу
-        public Guid ProductId { get; set; } // Внешний ключ к продукту
+        public Guid OrderId { get; set; } 
+        public Guid ProductId { get; set; } 
         public int Quantity { get; set; }
         public decimal Amount { get; set; }
     }

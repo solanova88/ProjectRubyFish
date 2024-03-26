@@ -6,15 +6,6 @@ using System.Threading.Tasks;
 
 namespace ModelsLibrary
 {
-    public enum ProductType
-    {
-        Roll,
-        Pizza,
-        Set,
-        Combo,
-        Dessert,
-        Drink
-    }
     public class Product
     {
         public Guid Id { get; set; }
