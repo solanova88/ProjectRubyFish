@@ -9,9 +9,11 @@ namespace ModelsLibrary
     public class Order
     {
         public Guid Id { get; set; }
-        public DateTime OrderDateTime { get; set; }
+        public DateTime CreatedDate { get; set; }
         public OrderStatus Status { get; set; }
-        public string DeliveryAddress { get; set; }
-        public List<OrderDetail> OrderDetails { get; set; }
+        public Guid UserId { get; set; }
+        public DeliveryAddress DeliveryAddress { get; set; }
+        public string? Comment { get; set; }
+        public List<OrderDetail> Details { get; set; }
     }
 }

@@ -172,15 +172,11 @@
 
             function updateLocalStorage(product) {
                 var order = getProductsData();
-                // Обновление продукта в заказе
                 order.products = order.products.map(p => p.id === product.id ? product : p);
-                // Удаление продукта из заказа, если его количество равно 0
                 if (product.quantity === 0) {
                     order.products = order.products.filter(p => p.id !== product.id);
                 }
-                // Пересчет общей стоимости заказа
                 order.totalAmount = order.products.reduce((total, p) => total + (p.price * p.quantity), 0);
-                // Обновление LocalStorage
                 localStorage.setItem('order', JSON.stringify(order));
                 $('.total-amount').text(order.totalAmount + ' р');
             }

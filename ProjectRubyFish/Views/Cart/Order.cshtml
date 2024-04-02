@@ -1,1 +1,297 @@
 ﻿
+<style>
+    .wrapper{
+        position: relative;
+        width: 1440px;
+        margin: 0 auto;
+    }
+    .title{
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: center;
+        min-height: 99px;
+    }
+    .corner{
+        margin-top: 50px;
+        left: 20px;
+        position: absolute;
+    }
+
+    .order-box {
+        display: flex;
+        align-content: center;
+        flex-wrap: wrap;
+        align-items: center;
+        min-height: 800px;
+    }
+
+    .order-box-left{
+        position: absolute;
+        left: 0px;
+    }
+
+    .order-box-right {
+        position: absolute;
+        width: 650px;
+        height: 754px;
+        right: 60px
+    }
+
+    .required-information {
+        background-color: #fff;
+        width: 650px;
+        height: 714px;
+        border-radius: 9px;
+        padding: 20px;
+        box-shadow: 0px 0px 20px 0px rgb(64 67 83 / 19%);
+        margin: 20px;
+    }
+
+    .form-group {
+        position: relative;
+    }
+
+    .form-group {
+        margin: 12px;
+    }
+    .form-control{
+        height: 65px;
+        border-radius: 15px;
+    }
+
+    textarea.form-control {
+        width: 587px;
+        height: 125px;
+        resize: none;
+    }
+    .confirmation-plate{
+        display: flex;
+        background-color: #fff;
+        width: 500px;
+        height: 150px;
+        border-radius: 9px;
+        padding: 20px;
+        box-shadow: 0px 0px 20px 0px rgb(64 67 83 / 19%);
+        margin: 20px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-content: center;
+        justify-content: center;
+        align-items: center
+
+    }
+
+    .plateholder{
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+    }
+
+    .confirmation-cost-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        width: 200px;
+    }
+
+    .confirmation-cost-info-totalammount {
+        font-size: 25px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .confirmation-right {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 200px;
+    }
+    .confirmation-button{
+        text-decoration: none;
+        color: #eee;
+        background-color: #00008b;
+        transition: background-color 0.3s linear;
+        padding: 20px;
+        font-size: 18px;
+        border-radius: 20px;
+    }
+
+        .confirmation-button:hover{
+            background-color: #7442c8;
+        }
+
+
+    .back-to-cart {
+        text-decoration: none;
+        color: #eee;
+        background-color: #00008b;
+        transition: background-color 0.3s linear;
+        padding: 12px;
+        font-size: 15px;
+        border-radius: 10px;
+    }
+        .back-to-cart:hover {
+            background-color: #7442c8;
+        }
+
+</style>
+
+    <div class='wrapper'>
+        <div class='title'>
+            <h1 class="order-header" align="center">Оформление заказа</h1>
+            <div class='corner'>
+                <a class="action-btn" style="text-decoration: none; text-align: center;" asp-controller="Cart" asp-action="Index">
+                    <div class='back-to-cart'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" fill="currentColor" class="bi bi-arrow-bar-left" viewBox="0 1.5 16 16">
+                            <path fill-rule="evenodd" d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5" />
+                        </svg> В корзину
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class='order-box'>
+            <div class='order-box-left'>
+                <div class='required-information'>
+                    <h2>Контактная информация</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Имя*" id="name" name="name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="tel" class="form-control" placeholder="+7 (___) ___-__-__*" id="phone" name="phone" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="E-mail*" id="email" name="email" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Информация о доставке</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Улица*" id="street" name="street" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Квартира/Офис" id="apartment" name="apartment" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Подъезд" id="entrance" name="entrance">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Этаж" id="floor" name="floor">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Домофон" id="doorphone" name="doorphone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <textarea class="form-control" placeholder="Комментарий к заказу" id="comment" name="comment"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class='order-box-right'>
+                <div class="plateholder">
+                    <div class="confirmation-plate">
+                        <div class='confirmation-cost-info'>
+                            <div class='confirmation-cost-info-totalammount'>Итого: <span class="total-amount"></span></div>
+                        </div>
+                        <div class='confirmation-right'>
+                                <button type="submit" class="confirmation-button">Заказать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        function getProductsData() {
+            return JSON.parse(localStorage.getItem('order'));
+        }
+
+        function renderTotalAmmount(){
+            var order = getProductsData();
+            $('.total-amount').text(order.totalAmount + ' р');
+        }
+        renderTotalAmmount();
+
+        function sendOrderToServer() {
+            var order = getProductsData();
+            var products = order.products;
+
+            var orderDetails = [];
+
+            products.forEach(function (product) {
+                var orderDetail = {
+                    productId: product.id,
+                    productPrice: product.price,
+                    quantity: product.quantity,
+                    amount: product.price * product.quantity
+                };
+                orderDetails.push(orderDetail);
+            });
+            var formData = {
+                Name: $('#name').val(),
+                Phone: $('#phone').val(),
+                Email: $('#email').val(),
+                Street: $('#street').val(),
+                Apartment: $('#apartment').val(),
+                Entrance: $('#entrance').val(),
+                Floor: $('#floor').val(),
+                Doorphone: $('#doorphone').val(),
+                Comment: $('#comment').val()
+            };
+
+
+            var orderData = {
+                formData: formData,
+                products: orderDetails
+            };
+
+            $.ajax({
+                url: '/Cart/CreateOrder', 
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(orderData), 
+                success: function (response) {
+                    // Обработка успешного ответа сервера, если необходимо
+                },
+                error: function (xhr, status, error) {
+
+                    console.error('Произошла ошибка при отправке данных на сервер:', error);
+                }
+            });
+
+        }
+
+        $('.confirmation-button').click(function () {
+            sendOrderToServer();
+        });
+    });
+</script>

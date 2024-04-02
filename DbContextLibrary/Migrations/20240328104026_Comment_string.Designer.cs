@@ -3,6 +3,7 @@ using System;
 using DbContextLibrary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DbContextLibrary.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240328104026_Comment_string")]
+    partial class Comment_string
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace DbContextLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryAddress", (string)null);
+                    b.ToTable("DeliveryAddress");
                 });
 
             modelBuilder.Entity("ModelsLibrary.Order", b =>
@@ -77,7 +80,7 @@ namespace DbContextLibrary.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("ModelsLibrary.OrderDetail", b =>
@@ -102,7 +105,7 @@ namespace DbContextLibrary.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("ModelsLibrary.Product", b =>
@@ -125,7 +128,7 @@ namespace DbContextLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("ModelsLibrary.User", b =>
@@ -148,7 +151,7 @@ namespace DbContextLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("ModelsLibrary.Order", b =>

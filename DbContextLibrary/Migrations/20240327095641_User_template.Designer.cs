@@ -3,6 +3,7 @@ using System;
 using DbContextLibrary;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DbContextLibrary.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240327095641_User_template")]
+    partial class User_template
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +50,7 @@ namespace DbContextLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryAddress", (string)null);
+                    b.ToTable("DeliveryAddress");
                 });
 
             modelBuilder.Entity("ModelsLibrary.Order", b =>
@@ -55,9 +58,6 @@ namespace DbContextLibrary.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -75,9 +75,7 @@ namespace DbContextLibrary.Migrations
 
                     b.HasIndex("DeliveryAddressId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("ModelsLibrary.OrderDetail", b =>
@@ -102,7 +100,7 @@ namespace DbContextLibrary.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetails");
                 });
 
             modelBuilder.Entity("ModelsLibrary.Product", b =>
@@ -125,30 +123,7 @@ namespace DbContextLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
-                });
-
-            modelBuilder.Entity("ModelsLibrary.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("ModelsLibrary.Order", b =>
@@ -156,12 +131,6 @@ namespace DbContextLibrary.Migrations
                     b.HasOne("ModelsLibrary.DeliveryAddress", "DeliveryAddress")
                         .WithMany()
                         .HasForeignKey("DeliveryAddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ModelsLibrary.User", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -180,11 +149,6 @@ namespace DbContextLibrary.Migrations
             modelBuilder.Entity("ModelsLibrary.Order", b =>
                 {
                     b.Navigation("Details");
-                });
-
-            modelBuilder.Entity("ModelsLibrary.User", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
